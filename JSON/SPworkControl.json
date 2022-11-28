@@ -1,0 +1,17 @@
+{
+  "TaskType": "SP",
+  "JSONDir": "D:\\Git\\Crho\\JSON\\",
+  "DataDir": "D:\\Git\\Crho\\DataSP\\",
+  "FileNameBase": "SP2022-11-28-00-00",
+  "MaxN": 10,
+  "NoAdChUse": 10,
+  "CycleLenval": 0.1,
+  "OnTime": 0,
+  "OffTime": 0,
+  "NoStack": 1,
+  "MaxVval": 400,
+  "MaxIval": 100,
+  "Vdly": 0,
+  "NoCmd": 0,
+  "Cmds": null
+}
