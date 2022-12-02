@@ -1,7 +1,7 @@
 {
   "TaskType": "DC",
-  "JSONDir": "D:\\Git\\Crho\\JSON\\",
-  "DataDir": "D:\\Git\\Crho\\DataDC\\",
+  "JSONDir": "E:\\Git\\Crho\\JSON\\",
+  "DataDir": "E:\\Git\\Crho\\DataDC\\",
   "FileNameBase": "DC2022-11-28-00-00",
   "MaxN": 10,
   "NoAdChUse": 10,
