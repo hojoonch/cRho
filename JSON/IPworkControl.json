@@ -1,8 +1,8 @@
 {
   "TaskType": "IP",
-  "JSONDir": "E:\\Git\\Crho\\JSON\\",
-  "DataDir": "E:\\Git\\Crho\\DataIP\\",
-  "FileNameBase": "IP2022-11-28-00-00",
+  "JSONDir": "E:\\Git\\cRho\\JSON\\",
+  "DataDir": "E:\\Git\\cRho\\DataIP\\",
+  "FileNameBase": "IP22-12-02_17:10",
   "MaxN": 10,
   "NoAdChUse": 10,
   "CycleLenval": 1.0,
