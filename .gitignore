@@ -1,4 +1,4 @@
-DataDC/
-DataIP/
-DataSP/
-JSON/
+DataDC/*.*
+DataIP/*.*
+DataSP/*.*
+JSON/*.json
