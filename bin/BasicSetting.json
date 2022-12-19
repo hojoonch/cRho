@@ -6,5 +6,7 @@
   "interval": 1,
   "timeSpan": 3,
   "timeGap": 2,
-  "SpawnBefore": 30
+  "SpawnBefore": 30,
+  "SiteName": "ThisSite",
+  "LineName": "ThisLine"
 }
