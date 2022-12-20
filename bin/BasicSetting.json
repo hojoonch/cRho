@@ -8,5 +8,7 @@
   "timeGap": 2,
   "SpawnBefore": 30,
   "SiteName": "ThisSite",
-  "LineName": "ThisLine"
+  "LineName": "ThisLine",
+  "SampleRate": 2400,
+  "NexcludeDC": 4
 }
