@@ -60,7 +60,7 @@ if cname(1:3) == 'x86'
 elseif cname(1:3) == 'arm'
   % Linux
   cname
-  system(['! ./triangle -Q -q ',pfix,'.poly'])
+  system([' ./triangle -Q -q ',pfix,'.poly'])
 end
 
 
