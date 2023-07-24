@@ -1,4 +1,4 @@
-function [ar,g1x,g1y,g2x,g2y,g3x,g3y]=pdetrg(p,t)
+function [ar,g1x,g1y,g2x,g2y,g3x,g3y]=pdetrgm(p,t)
 %PDETRG Triangle geometry data.
 %
 %       [AR,A1,A2,A3]=PDETRG(P,T) returns the area of each triangle in AR

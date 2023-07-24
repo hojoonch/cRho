@@ -51,7 +51,19 @@ fclose(fidp);
 
 %eval(['!triangle -Q -q ',pfix,'.poly']) %matlab
 %system(['! /opt/local/bin/triangle -Q -q ',pfix,'.poly']) %gnu octave
-system(['! /home/pi/cRho/triangle/triangle -Q -q ',pfix,'.poly']) %gnu octave
+%system(['! /home/pi/cRho/triangle/triangle -Q -q ',pfix,'.poly']) %gnu octave
+cname = computer();
+if cname(1:3) == 'x86'
+  % windows
+  %cname
+  system([' .\triangle.exe -Q -q ',pfix,'.poly'])
+elseif cname(1:3) == 'arm'
+  % Linux
+  cname
+  system(['! ./triangle -Q -q ',pfix,'.poly'])
+end
+
+
 
 % p=load([pfix,'.1.node'])
 [ node_num, marker ] = node_header_read ( [pfix,'.1.node']);
@@ -150,7 +162,7 @@ while ( 1 )
     if ( text(1) == '#' )
         continue
     end
-    
+
     if ( s_len_trim ( text ) <= 0 )
         continue
     end
@@ -158,9 +170,9 @@ while ( 1 )
     %  Read (but ignore) header line.
     %
     if ( ~read_header )
-        
+
         [ a, count ] = sscanf ( text, '%d', 4 );
-        
+
         if ( count ~= 4 )
             fprintf ( 1, '\n' );
             fprintf ( 1, 'NODE_DATA_READ - Fatal error!\n' );
@@ -169,7 +181,7 @@ while ( 1 )
             fprintf ( 1, '  Line number = %d.\n', text_num );
             error ( 'NODE_DATA_READ - Fatal error!' );
         end
-        
+
         read_header = 1;
         %
         %  Read data for next node.
@@ -184,18 +196,18 @@ while ( 1 )
             fprintf ( 1, '  Line number = %d.\n', text_num );
             error ( 'NODE_DATA_READ - Fatal error!' );
         end
-        
+
         node = node + 1;
         node_xy(1,node) = a(2);
         node_xy(2,node) = a(3);
         node_marker(node) = a(4);
-        
+
         if ( node_num <= node )
             break
         end
-        
+
     end
-    
+
 end
 
 fclose ( input );
@@ -255,21 +267,21 @@ function [ node_num, marker ] = node_header_read ( node_filename )
 %
 input = fopen ( node_filename, 'rt' );
 text_num = 0;
-while ( 1 )    
+while ( 1 )
     text = fgetl ( input );
-    
+
     if ( text == -1 )
         break
-    end    
+    end
     text_num = text_num + 1;
-    
+
     if ( text(1) == '#' )
         continue
-    end    
+    end
     if ( s_len_trim ( text ) <= 0 )
         continue
-    end    
-    [ a, count ] = sscanf ( text, '%d', 4 );    
+    end
+    [ a, count ] = sscanf ( text, '%d', 4 );
     if ( count ~= 4 )
         fprintf ( 1, '\n' );
         fprintf ( 1, 'NODE_HEADER_READ - Fatal error!\n' );
@@ -277,12 +289,12 @@ while ( 1 )
         fprintf ( 1, '  File is "%s".\n', node_filename );
         fprintf ( 1, '  Line number = %d.\n', text_num );
         error ( 'NODE_HEADER_READ - Fatal error!' );
-    end    
+    end
     node_num = a(1);
     dim = a(2);
     att_num = a(3);
-    marker = a(4);    
-    break    
+    marker = a(4);
+    break
 end
 fclose ( input );
 return
@@ -324,22 +336,22 @@ text_num = 0;
 read_header = 0;
 element = 0;
 
-while ( 1 )    
+while ( 1 )
     text = fgetl ( input );
     if ( text == -1 )
         break
-    end    
-    text_num = text_num + 1;    
+    end
+    text_num = text_num + 1;
     if ( text(1) == '#' )
         continue
-    end    
+    end
     if ( s_len_trim ( text ) <= 0 )
         continue
     end
     %
     %  Read (but ignore) header line.
-    if ( ~read_header )        
-        [ a, count ] = sscanf ( text, '%d', 3 );        
+    if ( ~read_header )
+        [ a, count ] = sscanf ( text, '%d', 3 );
         if ( count ~= 3 )
             fprintf ( 1, '\n' );
             fprintf ( 1, 'ELEMENT_DATA_READ - Fatal error!\n' );
@@ -347,11 +359,11 @@ while ( 1 )
             fprintf ( 1, '  File is "%s".\n', element_filename );
             fprintf ( 1, '  Line number = %d.\n', text_num );
             error ( 'ELEMENT_DATA_READ - Fatal error!' );
-        end        
+        end
         read_header = 1;
-        %  Read data for next element.        
-    else        
-        [ a, count ] = sscanf ( text, '%d', element_order + 1 );        
+        %  Read data for next element.
+    else
+        [ a, count ] = sscanf ( text, '%d', element_order + 1 );
         if ( count ~= 4 )
             fprintf ( 1, '\n' );
             fprintf ( 1, 'ELEMENT_DATA_READ - Fatal error!\n' );
@@ -360,13 +372,13 @@ while ( 1 )
             fprintf ( 1, '  File is "%s".\n', element_filename );
             fprintf ( 1, '  Line number = %d.\n', text_num );
             error ( 'ELEMENT_DATA_READ - Fatal error!' );
-        end        
+        end
         element = element + 1;
-        element_node(1:element_order,element) = a(2:element_order+1);        
+        element_node(1:element_order,element) = a(2:element_order+1);
         if ( element_num <= element )
             break
-        end 
-    end 
+        end
+    end
 end
 fclose ( input );
 return
@@ -435,19 +447,19 @@ function [ element_order, element_num ] = element_header_read ( ...
 input = fopen ( element_filename, 'rt' );
 text_num = 0;
 
-while ( 1 )    
+while ( 1 )
     text = fgetl ( input );
     if ( text == -1 )
         break
-    end    
-    text_num = text_num + 1;    
+    end
+    text_num = text_num + 1;
     if ( text(1) == '#' )
         continue
-    end    
+    end
     if ( s_len_trim ( text ) <= 0 )
         continue
-    end    
-    [ a, count ] = sscanf ( text, '%d', 3 );    
+    end
+    [ a, count ] = sscanf ( text, '%d', 3 );
     if ( count ~= 3 )
         fprintf ( 1, '\n' );
         fprintf ( 1, 'ELEMENT_HEADER_READ - Fatal error!\n' );
@@ -456,11 +468,11 @@ while ( 1 )
         fprintf ( 1, '  Line number = %d.\n', text_num );
         error ( 'ELEMENT_HEADER_READ - Fatal error!' );
     end
-    
+
     element_num = a(1);
     element_order = a(2);
-    att_num = a(3);    
-    break    
+    att_num = a(3);
+    break
 end
 fclose (input );
 return
