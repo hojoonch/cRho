@@ -50,7 +50,8 @@ fprintf(fidp,'1 %8.4f %8.4f',-data.zmax/2,data.xelek(fix((2*data.nel-1)/2)));
 fclose(fidp);
 
 %eval(['!triangle -Q -q ',pfix,'.poly']) %matlab
-system(['! /opt/local/bin/triangle -Q -q ',pfix,'.poly']) %gnu octave
+%system(['! /opt/local/bin/triangle -Q -q ',pfix,'.poly']) %gnu octave
+system(['! /home/pi/cRho/triangle/triangle -Q -q ',pfix,'.poly']) %gnu octave
 
 % p=load([pfix,'.1.node'])
 [ node_num, marker ] = node_header_read ( [pfix,'.1.node']);

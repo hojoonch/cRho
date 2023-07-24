@@ -1,0 +1,9 @@
+Base folde : ~/cRho
+
+run
+
+>> mono ./bin/cRho.exe
+
+update
+
+>> git pull origin main
