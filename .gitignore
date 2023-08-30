@@ -12,3 +12,6 @@ JSON/*
 JSON/*.json
 Log.txt
 bin/BasicSetting.json
+*.oct
+*.o
+octave-rapidjson/rapidjson/

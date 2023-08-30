@@ -1,10 +1,18 @@
 function invert(varargin)
-        %val = get(handles.FileListBox, 'value');        
+        %val = get(handles.FileListBox, 'value');
         %nodir=handles.DataID(1)-1;
         %data=handles.DataContents{val-nodir};
-        
-        fname = 'a5_1_ws_6.dat';
+
+        #if length(varargin) > 1
+        #  fname = varargin{1}
+        #else
+          fname = 'a5_1_ws_6.dat';
+
+        # this is original function to read Res2Dinv format
         data = getResisitivityData(fname);
+        whos
+
+       % pause
 
         %set(handles.InvBut,'Enable','off')
         %cocuk=get(handles.resip,'Children');
@@ -14,11 +22,11 @@ function invert(varargin)
         %    kont2=find(cocuk~=secili);
         %    set(handles.resip,'SelectedObject',cocuk(2))
         %end
-        
+
         % Getting inversion settings
         %itmax = (get(handles.numiter,'Value'));
         itmax = 5;
-        
+
         if itmax==11
             itmax=15;
         end
@@ -26,7 +34,7 @@ function invert(varargin)
 %             opt(k) = get(handles.(['gosterim',num2str(k)]),'Value');
 %         end
 %         mtype=get(handles.mesh,'value');
-        
+
         mtype = 1
         switch mtype
             case 0
@@ -62,7 +70,7 @@ function invert(varargin)
                     end
                 case 1 % Normal mode selected
                     [p,t,nlay,tev,par,npar,z]=meshgen(data);
-                    
+
                     parc=1:npar;
                     say=1;
                     for k=1:data.nel-1
@@ -71,7 +79,7 @@ function invert(varargin)
                             zp(say,:)=[z(m) z(m) z(m+1) z(m+1)];
                             say=say+1;
                         end
-                        
+
                     end
                     parc=reshape(parc,nlay,data.nel-1);
                     parc=[parc;zeros(1,size(parc,2))];
@@ -79,30 +87,30 @@ function invert(varargin)
                     C=full(delsq(parc));
             end
             [sig,es,ds,akel,V1,k1,prho,so,indx,pma,nu]=initial(t,p,data,yky,npar) ;
-            
+
             sd=1./data.roa.^.025;
             %
             Rd=diag(sd);
 %             clear_main_panel(handles)
-            
+
 %             g3 = get(handles.gosterim1,'Value');
 %             set(handles.progressbar, 'position', [.8 0 0.01 1]);
 %             set(handles.progressbar ,'Visible','on')
             %
             tic
-            
+
             for iter=1:itmax
                 % Forward operator
-                
+
                 [J,ro]=forward(yky,t,es,sig,so,data.nel,akel,1,tev,k1,indx,V1,data,prho,npar,par,p);
                 dd=log(data.roa(:))-log(ro(:));
                 misfit=sqrt((Rd*dd)'*(Rd*dd)/data.nd)*100;
                 % Parameter update
-                
+
                 [misfit,sig,prho,ro]=pupd(data,J,par,yky,t,es,akel,tev,k1,indx,V1,prho',npar,dd,so,p,C,lambda,Rd);
 %                 figure
 %                 pdeplot(p,[],t,'xydata',1./sig,'xystyle','flat')
-                
+
                 mfit(iter)=misfit;
                 g3 =1;
                 switch g3
@@ -112,7 +120,7 @@ function invert(varargin)
                         cizro=log10(prho');
                 end
                 % Graph the results of iterations
-                
+
                 if iter==1
                     alp=sum(abs(J),1);
                     alp=alp/max(alp);
@@ -143,7 +151,7 @@ function invert(varargin)
                 end
                 oran=.2*(1/itmax)*iter;
 %                 set(handles.progressbar, 'position', [.8 0 oran 1]);%,'BackGroundColor',[255-oran*255 255 255-oran*255]/255);
-%                 
+%
 %                 set(handles.statusText, 'string', ...
 %                     sprintf('Iteration ... %d / %d',iter,itmax))
 %                 drawnow;
@@ -162,8 +170,8 @@ function invert(varargin)
             if data.ip
                 [pma,misfit_ip,mac,iterx]=pure_ip(data,ro,sig,J,prho,C,es,akel,V1,k1,so,indx,pma,nu,tev,par,p,t,npar,Rd);
             end
-            
-            
+
+
 %             itime=toc;
 %             yer=get(handles.statusText,'position');
 %             set(handles.statusText, 'string', ...
@@ -183,12 +191,12 @@ function invert(varargin)
             else
                 save ([pwd,'/',dadi],'data','xp','zp','prho','misfit','iter','ro','alp1','pma','mac','misfit_ip','-mat')
 %                set(handles.InvBut,'Enable','on')
-                
+
             end
-            
+
         end
 end
-    
+
 %--------------------------------------------------------------------------
 % getResisitivityData
 %   This reads in all supported data files in the current directory
