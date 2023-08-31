@@ -1,15 +1,11 @@
-function data=read_data(varargin)
+function data=read_aprj(varargin)
 % Data input function for ELRIS
 % Last revision 21.06.2014
 % Able to read general array format
 global pathname
 if nargin==0
-    if isempty(pathname)
-        pathname=pwd;
-    end
-
-    fid=fopen([pathname filename]);
-
+    data = [];
+    return
 else
     filename=cell2mat(varargin);
     fid=fopen(filename);
@@ -25,22 +21,36 @@ elseif ischar(fid)
     return
 end
 
-data.prfadi=fgetl(fid);
-data.ela=fscanf(fid,'%f',1);
-data.eldiz=fscanf(fid,'%d',1);%1: Wenner, 2:Pole-pole 3: Dipole-dipole 6: Pole-dipole 7: Wenner-Schlumberger 11: Mixed
-if data.eldiz==11
-    data.subeldiz=fscanf(fid,'%d',1);
-    fgetl(fid);
-    fgetl(fid);
-    fgetl(fid);
-end
-data.nd=fscanf(fid,'%d',1);
-data.mp=fscanf(fid,'%d',1);%MIDPOINT
-data.ip=fscanf(fid,'%d',1);%IP
+% read json
+dataJ = load_json(fileread(filename));
 
-data=oku(data,fid); %Call data reader function
-topog=fscanf(fid,'%d',1);
-data.topog=topog;
+#data.prfadi=fgetl(fid);
+data.prfadi= [dataJ.area ':' dataJ.line];
+#data.ela=fscanf(fid,'%f',1);
+data.ela=dataJ.elspacing;
+#data.eldiz=fscanf(fid,'%d',1);%1: Wenner, 2:Pole-pole 3: Dipole-dipole 6: Pole-dipole 7: Wenner-Schlumberger 11: Mixed
+at_conv = [4000 3000 0 -1 -1 1000 5000 -1 -1 -1 6000];
+data.eldiz=find(at_conv == dataJ.arrayType);
+%if data.eldiz==11
+%    data.subeldiz=fscanf(fid,'%d',1);
+%    fgetl(fid);
+%   fgetl(fid);
+%    fgetl(fid);
+%end
+
+
+data.nd= cal_ndata(data.eldiz, dataJ.head03_1, dataJ.head03_2);
+%data.mp=fscanf(fid,'%d',1);%MIDPOINT
+%data.ip=fscanf(fid,'%d',1);%IP
+data.mp=1;%MIDPOINT
+data.ip=0;%IP
+
+data=okuJ(data,dataJ,fid); %Call data reader function
+
+pause
+
+%opog=fscanf(fid,'%d',1);
+%data.topog=topog;
 if topog
     topsay=fscanf(fid,'%d',1);
     data.topo = fscanf(fid, '%g %g', [2 topsay])';    % Read topography data
@@ -226,15 +236,15 @@ end
 data.filename=filename;
 
 
+%1: Wenner, 2:Pole-pole 3: Dipole-dipole 6: Pole-dipole 7: Wenner-Schlumberger 11: Mixed
+function data=okuJ(data, dataJ, fid)
+  veri = makeR2dinvData(dataJ)
 
-function data=oku(data,fid)
-if data.eldiz==6||data.eldiz==3||data.eldiz==7
+  pause
+
+if data.eldiz==6||data.eldiz==3||data.eldiz==7 %P-Dp, Dp-Dp, WSch
     if data.ip
-        fscanf(fid,'%s',1);
-        fscanf(fid,'%s',1);
-
-        fscanf(fid,'%f%c%f',[1 3]);
-        veri = fscanf(fid, '%g %g %g %g %g', [5 data.nd])';    % Read apparent resistivity & chargeability
+        %veri = fscanf(fid, '%g %g %g %g %g', [5 data.nd])';    % Read apparent resistivity & chargeability
         data.xd=veri(:,1);
         data.mn=veri(:,2);
         data.nlev=veri(:,3);
@@ -247,40 +257,39 @@ if data.eldiz==6||data.eldiz==3||data.eldiz==7
         data.nlev=veri(:,3);
         data.roa=veri(:,4);
     end
-elseif data.eldiz==1
+elseif data.eldiz==1 % Wenner
     if data.ip
-        fscanf(fid,'%s',1);
-        fscanf(fid,'%s',1);
-
-        fscanf(fid,'%f%c%f',[1 3]);
-        veri = fscanf(fid, '%g %g %g %g', [4 data.nd])';     % Read apparent resistivity & chargeability
+        %fscanf(fid,'%s',1);
+        %fscanf(fid,'%s',1);
+        %fscanf(fid,'%f%c%f',[1 3]);
+        %veri = fscanf(fid, '%g %g %g %g', [4 data.nd])';     % Read apparent resistivity & chargeability
         data.xd=veri(:,1);
         data.mn=veri(:,2);
         data.nlev=veri(:,2)./data.ela;
         data.roa=veri(:,3);
         data.ma=veri(:,4);
     else
-        veri = fscanf(fid, '%g %g %g %g %g', [3 data.nd])';    % Read apparent resistivity
+        %veri = fscanf(fid, '%g %g %g %g %g', [3 data.nd])';    % Read apparent resistivity
         data.xd=veri(:,1);
         data.mn=veri(:,2)*data.ela;
         data.nlev=veri(:,2);
         data.roa=veri(:,3);
     end
-elseif data.eldiz==2
+elseif data.eldiz==2 % pole pole
 
     if data.ip
-        fscanf(fid,'%s',1);
-        fscanf(fid,'%s',1);
+        %fscanf(fid,'%s',1);
+        %fscanf(fid,'%s',1);
 
-        fscanf(fid,'%f%c%f',[1 3]);
-        veri = fscanf(fid, '%g %g %g %g', [4 data.nd])';     % Read apparent resistivity & chargeability
+        %fscanf(fid,'%f%c%f',[1 3]);
+        %veri = fscanf(fid, '%g %g %g %g', [4 data.nd])';     % Read apparent resistivity & chargeability
         data.xd=veri(:,1);
         data.mn=veri(:,2);
         data.nlev=veri(:,2)./data.ela;
         data.roa=veri(:,3);
         data.ma=veri(:,4);
     else
-        veri = fscanf(fid, '%g %g %g', [3 data.nd])';    % Read apparent resistivity
+        %veri = fscanf(fid, '%g %g %g', [3 data.nd])';    % Read apparent resistivity
         data.xd=veri(:,1);
         data.mn(1:data.nd)=9999;%veri(:,2)*data.ela;
         data.nlev=veri(:,2);
@@ -378,3 +387,75 @@ data.Rd=Rd;
 % w=1./data.roa.^.25;
 % data.Rd=diag(w);
 % fclose (fid);
+
+function ndata = cal_ndata(type, N, Nd1)
+  %1: Wenner, 2:Pole-pole 3: Dipole-dipole 6: Pole-dipole 7: Wenner-Schlumberger 11: Mixed
+  switch type
+    case 1  % Wenner
+      ndata = Nd1 * N - 3 * N * (N-1) / 2;
+    case 2 % Pole-pole
+      d1 = Nd1;
+      d2 = d1 - N + 1;
+      ndata = d1*(d1+1)/2 - (d2 - 1) * d2/2 ;
+    case 3 % Dipole-dipole
+      d1 = Nd1;
+      d2 = d1 - N + 1;
+      ndata = d1*(d1+1)/2 - (d2 - 1) * d2/2;
+    case 6 % Pole-dipole
+      d1 = Nd1;
+      d2 = d1 - N + 1;
+      ndata = d1*(d1+1)/2 - (d2 - 1) * d2/2 ;
+    case 7 % Wenner-Schlimberger
+      #ndata = Nd1 * N -  N * (N-1)
+      ndata = (Nd1 - N + 1) * N;
+    case 11 % Mixed , modified pole pole
+      d1 = Nd1;
+      d2 = d1 - N + 1;
+      ndata = d1*(d1+1)/2 - (d2 - 1) * d2/2 ;
+  endswitch
+  return
+
+function veri = makeR2dinvData(dataJ)
+  R01 = dataJ.R01;
+  R11 = dataJ.R11;
+  veri=[];
+  if dataJ.arrayType == 5000  % schlumberger
+    nf = 2;
+  elseif dataJ.arrayType == 4000 % wenner
+    nf = 3;
+  else  % dpdp(0), p-p(3000), p-dp(1000)
+    nf = 1;
+  endif
+
+  ind = 1;
+  for i = 1 : dataJ.head03_1
+    for j = 1 : dataJ.head03_2 - (i-1)*nf
+      if nf == 1
+        c2 = j; % p-p, p-dp
+        if dataJ.arrayType == 0 % dp-dp
+          c2 = c2 + 1;
+        endif
+        p1 = c2 + i;
+        mp = (c2+p1)*dataJ.elspacing/2 + dataJ.sta0;
+        mn = dataJ.elspacing;
+        nn = i;
+      elseif nf == 2
+
+      elseif nf == 3
+
+      endif
+
+      veri(ind,1) = mp;
+      veri(ind,2) = mn;
+      veri(ind,3) = nn;
+      veri(ind,4) = R01(i,j);
+
+      ind=ind+1
+
+    endfor
+    #printf('\n')
+  endfor
+  return
+
+
+

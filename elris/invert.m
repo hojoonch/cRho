@@ -1,4 +1,4 @@
-function invert(varargin)
+function invert(pathname, filename)
         %val = get(handles.FileListBox, 'value');
         %nodir=handles.DataID(1)-1;
         %data=handles.DataContents{val-nodir};
@@ -6,13 +6,21 @@ function invert(varargin)
         #if length(varargin) > 1
         #  fname = varargin{1}
         #else
-          fname = 'a5_1_ws_6.dat';
+
 
         # this is original function to read Res2Dinv format
-        data = getResisitivityData(fname);
-        whos
+        #global pathname
 
-       % pause
+        pathname = strtrim(pathname)
+        filename = strtrim(filename)
+        if isempty(pathname)
+          pathname = pwd
+        endif
+        if isempty(filename)
+          filename = 'a5_1_ws_6.dat';
+        endif
+        fname = [pathname filesep filename];
+        data = getResisitivityData(fname);
 
         %set(handles.InvBut,'Enable','off')
         %cocuk=get(handles.resip,'Children');
@@ -183,13 +191,16 @@ function invert(varargin)
 %             pause(1)
 %             set(handles.statusText, 'string', '','position',yer)
             % Save inversion results for future display
-            dadi= fname; %handles.DataNames{val-nodir};
-            dadi(end-2:end)='mat';
+            %dadi= fname; %handles.DataNames{val-nodir};
+            %dadi(end-2:end)='mat';
+            ndot = findstr(fname,'.')
+            dadi = [fname(1:ndot) 'mat']
+
             if data.ip==0
-                save ([pwd,'/',dadi],'data','xp','zp','prho','misfit','iter','ro','alp1','-mat')
+                save (dadi,'data','xp','zp','prho','misfit','iter','ro','alp1','-mat')
 %                set(handles.InvBut,'Enable','on')
             else
-                save ([pwd,'/',dadi],'data','xp','zp','prho','misfit','iter','ro','alp1','pma','mac','misfit_ip','-mat')
+                save (dadi,'data','xp','zp','prho','misfit','iter','ro','alp1','pma','mac','misfit_ip','-mat')
 %                set(handles.InvBut,'Enable','on')
 
             end
@@ -202,6 +213,10 @@ end
 %   This reads in all supported data files in the current directory
 %--------------------------------------------------------------------------
     function record = getResisitivityData(filename)
+      if length(strfind(filename,'aprj'))
+        [record] = read_aprj(filename)
+      else
         [record]=read_data(filename);
+      end
     end
 
