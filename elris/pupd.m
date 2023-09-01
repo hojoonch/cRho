@@ -7,6 +7,7 @@ while lambda<0.01
 end
 %smoothness constrained least squares
 %smoothness constrain is a second order laplacian
+
 b=(J'*Rd'*Rd*dd-lambda*C*((1./prho(:))));
 A=(J'*Rd'*Rd*J+lambda*C);
 dp=A\b;

@@ -21,14 +21,16 @@ elseif ischar(fid)
     return
 end
 
+
 % read json
 dataJ = load_json(fileread(filename));
 
-#data.prfadi=fgetl(fid);
+% for test
+%dataJ.arrayType = 4000;
+
 data.prfadi= [dataJ.area ':' dataJ.line];
-#data.ela=fscanf(fid,'%f',1);
 data.ela=dataJ.elspacing;
-#data.eldiz=fscanf(fid,'%d',1);%1: Wenner, 2:Pole-pole 3: Dipole-dipole 6: Pole-dipole 7: Wenner-Schlumberger 11: Mixed
+
 at_conv = [4000 3000 0 -1 -1 1000 5000 -1 -1 -1 6000];
 data.eldiz=find(at_conv == dataJ.arrayType);
 %if data.eldiz==11
@@ -37,20 +39,15 @@ data.eldiz=find(at_conv == dataJ.arrayType);
 %   fgetl(fid);
 %    fgetl(fid);
 %end
-
-
 data.nd= cal_ndata(data.eldiz, dataJ.head03_1, dataJ.head03_2);
-%data.mp=fscanf(fid,'%d',1);%MIDPOINT
-%data.ip=fscanf(fid,'%d',1);%IP
 data.mp=1;%MIDPOINT
 data.ip=0;%IP
 
 data=okuJ(data,dataJ,fid); %Call data reader function
 
-pause
+topog = false; % skip reading topo data
+data.topog = topog;
 
-%opog=fscanf(fid,'%d',1);
-%data.topog=topog;
 if topog
     topsay=fscanf(fid,'%d',1);
     data.topo = fscanf(fid, '%g %g', [2 topsay])';    % Read topography data
@@ -59,6 +56,7 @@ else
     fscanf(fid,'%s',2);
     data.sd=fscanf(fid, '%g ', [1 data.nd])';
 end
+
 switch data.eldiz
     case 1 %wenner
         data.eldizc='Wenner';
@@ -84,7 +82,7 @@ switch data.eldiz
                 data.xd=(xc1+xc2)/2;
         end
         for j=1:data.nd
-            data.pat.esira(j,:)=[find(xelek==xc1(j)) find(xelek==xc2(j)) find(xelek==xp1(j)) find(xelek==xp2(j))];%Elektrotlar�n s�ra numaralar�
+            data.pat.esira(j,:)=[find(xelek==xc1(j)) find(xelek==xc2(j)) find(xelek==xp1(j)) find(xelek==xp2(j))];
         end
         data.nel=length(xelek);
         data.xelek=xelek;
@@ -129,11 +127,6 @@ switch data.eldiz
         data.pat.ind1=sub2ind([data.nel data.nel],data.pat.esira(:,1),data.pat.esira(:,2));
         data.dz1=0.867*data.ela;
 
-
-
-
-
-
 %---------------------------------
     case 3 % Dipole dipole
         data.eldizc='Dipole-Dipole';
@@ -144,7 +137,7 @@ switch data.eldiz
         xelek=unique([xc1;xc2;xp1;xp2]);
         data.pat.kon=[xc1 xc2 xp1 xp2];
         for j=1:data.nd
-            data.pat.esira(j,:)=[find(xelek==xc1(j)) find(xelek==xc2(j)) find(xelek==xp1(j)) find(xelek==xp2(j))];%Elektrotlar�n s�ra numaralar�
+            data.pat.esira(j,:)=[find(xelek==xc1(j)) find(xelek==xc2(j)) find(xelek==xp1(j)) find(xelek==xp2(j))];
         end
         data.nel=length(xelek);
         data.pat.ind1=sub2ind([data.nel data.nel],data.pat.esira(:,1),data.pat.esira(:,3));
@@ -164,19 +157,19 @@ switch data.eldiz
                 xp1=xc1+data.nlev.*data.ela;
                 xp2=xp1+data.mn;
                 xelek=unique([xc1;xp1;xp2]);
-                data.pat.kon=[xc1 xp1 xp2];%�l��m s�ras�nda elektrotlar�n
-                %         konumland�r�ld�klar� noktan�n x koordinatlar�
+                data.pat.kon=[xc1 xp1 xp2];
+
             case 0
                 xc1=data.xd;
                 xp1=xc1+data.nlev.*data.ela;
                 xp2=xp1+data.mn;
                 xelek=unique([xc1;xp1;xp2]);
-                data.pat.kon=[xc1 xp1 xp2];%�l��m s�ras�nda elektrotlar�n
+                data.pat.kon=[xc1 xp1 xp2];
                 data.xd=(xc1+xp2)/2;
         end
 
         for j=1:data.nd
-            data.pat.esira(j,:)=[find(xelek==xc1(j)) find(xelek==xp1(j)) find(xelek==xp2(j))];%Elektrotlar�n s�ra numaralar�
+            data.pat.esira(j,:)=[find(xelek==xc1(j)) find(xelek==xp1(j)) find(xelek==xp2(j))];
         end
         data.nel=length(xelek);
         data.xelek=xelek;
@@ -211,7 +204,7 @@ switch data.eldiz
         end
 
         for j=1:data.nd
-            data.pat.esira(j,:)=[find(xelek==xc1(j)) find(xelek==xc2(j)) find(xelek==xp1(j)) find(xelek==xp2(j))];%Elektrotlar�n s�ra numaralar�
+            data.pat.esira(j,:)=[find(xelek==xc1(j)) find(xelek==xc2(j)) find(xelek==xp1(j)) find(xelek==xp2(j))];
         end
         data.nel=length(xelek);
         data.xelek=xelek;
@@ -227,6 +220,19 @@ switch data.eldiz
     otherwise
         errordlg('Not a supported array type!','modal')
 end
+
+% for test
+% [xc1 xc2 xp1 xp2]
+
+% remove negative roa
+indP = find(data.roa > 0);
+data.indP = indP;
+data.nd = length(indP);
+data.xd = data.xd(indP);
+data.mn = data.mn(indP);
+data.nlev = data.nlev(indP);
+data.roa = data.roa(indP);
+
 data.homro=exp(mean(log(data.roa)));%exp(sum(log(data.roa)/length(data.roa)));%%
 if data.topog
     data.zelek=pchip(data.topo(:,1),data.topo(:,2),data.xelek);
@@ -238,9 +244,7 @@ data.filename=filename;
 
 %1: Wenner, 2:Pole-pole 3: Dipole-dipole 6: Pole-dipole 7: Wenner-Schlumberger 11: Mixed
 function data=okuJ(data, dataJ, fid)
-  veri = makeR2dinvData(dataJ)
-
-  pause
+  veri = makeR2dinvData(dataJ);
 
 if data.eldiz==6||data.eldiz==3||data.eldiz==7 %P-Dp, Dp-Dp, WSch
     if data.ip
@@ -251,7 +255,7 @@ if data.eldiz==6||data.eldiz==3||data.eldiz==7 %P-Dp, Dp-Dp, WSch
         data.roa=veri(:,4);
         data.ma=veri(:,5);
     else
-        veri = fscanf(fid, '%g %g %g %g %g', [4 data.nd])';    % Read apparent resistivity
+        %veri = fscanf(fid, '%g %g %g %g %g', [4 data.nd])';    % Read apparent resistivity
         data.xd=veri(:,1);
         data.mn=veri(:,2);
         data.nlev=veri(:,3);
@@ -259,41 +263,29 @@ if data.eldiz==6||data.eldiz==3||data.eldiz==7 %P-Dp, Dp-Dp, WSch
     end
 elseif data.eldiz==1 % Wenner
     if data.ip
-        %fscanf(fid,'%s',1);
-        %fscanf(fid,'%s',1);
-        %fscanf(fid,'%f%c%f',[1 3]);
-        %veri = fscanf(fid, '%g %g %g %g', [4 data.nd])';     % Read apparent resistivity & chargeability
         data.xd=veri(:,1);
         data.mn=veri(:,2);
         data.nlev=veri(:,2)./data.ela;
         data.roa=veri(:,3);
         data.ma=veri(:,4);
     else
-        %veri = fscanf(fid, '%g %g %g %g %g', [3 data.nd])';    % Read apparent resistivity
         data.xd=veri(:,1);
-        data.mn=veri(:,2)*data.ela;
-        data.nlev=veri(:,2);
-        data.roa=veri(:,3);
+        data.mn=veri(:,2);
+        data.nlev=veri(:,3);
+        data.roa=veri(:,4);
     end
 elseif data.eldiz==2 % pole pole
-
     if data.ip
-        %fscanf(fid,'%s',1);
-        %fscanf(fid,'%s',1);
-
-        %fscanf(fid,'%f%c%f',[1 3]);
-        %veri = fscanf(fid, '%g %g %g %g', [4 data.nd])';     % Read apparent resistivity & chargeability
         data.xd=veri(:,1);
         data.mn=veri(:,2);
-        data.nlev=veri(:,2)./data.ela;
+        data.nlev=veri(:,2);
         data.roa=veri(:,3);
         data.ma=veri(:,4);
     else
-        %veri = fscanf(fid, '%g %g %g', [3 data.nd])';    % Read apparent resistivity
         data.xd=veri(:,1);
         data.mn(1:data.nd)=9999;%veri(:,2)*data.ela;
-        data.nlev=veri(:,2);
-        data.roa=veri(:,3);
+        data.nlev=veri(:,3);
+        data.roa=veri(:,4);
     end
 elseif data.eldiz==11
     for k=1:data.nd
@@ -428,33 +420,39 @@ function veri = makeR2dinvData(dataJ)
   endif
 
   ind = 1;
-  for i = 1 : dataJ.head03_1
-    for j = 1 : dataJ.head03_2 - (i-1)*nf
+
+  for i = 1 : double(dataJ.head03_1)
+    for j = 1 : double(dataJ.head03_2) - (i-1)*nf
       if nf == 1
         c2 = j; % p-p, p-dp
         if dataJ.arrayType == 0 % dp-dp
           c2 = c2 + 1;
         endif
         p1 = c2 + i;
-        mp = (c2+p1)*dataJ.elspacing/2 + dataJ.sta0;
+
+        mp = (c2+p1-2.0)*double(dataJ.elspacing)/2.0 + double(dataJ.sta0);
+        mn = double(dataJ.elspacing);
+        nn = i;
+
+      elseif nf == 2 % schlumberger
+        mp = (2*(j+i)-1) * double(dataJ.elspacing)/2.0 + double(dataJ.sta0);
         mn = dataJ.elspacing;
         nn = i;
-      elseif nf == 2
-
-      elseif nf == 3
-
+      elseif nf == 3 % wenner
+        mp = (2*(j-1) + 3*i) * double(dataJ.elspacing)/2.0 + double(dataJ.sta0);
+        mn = i * dataJ.elspacing;
+        nn = i;
       endif
 
       veri(ind,1) = mp;
       veri(ind,2) = mn;
       veri(ind,3) = nn;
       veri(ind,4) = R01(i,j);
-
-      ind=ind+1
-
+      ind=ind+1;
     endfor
     #printf('\n')
   endfor
+
   return
 
 

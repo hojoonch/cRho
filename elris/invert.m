@@ -22,6 +22,9 @@ function invert(pathname, filename)
         fname = [pathname filesep filename];
         data = getResisitivityData(fname);
 
+				%data
+				%pause
+
         %set(handles.InvBut,'Enable','off')
         %cocuk=get(handles.resip,'Children');
         %secili=get(handles.resip,'SelectedObject');
@@ -109,9 +112,11 @@ function invert(pathname, filename)
 
             for iter=1:itmax
                 % Forward operator
-
                 [J,ro]=forward(yky,t,es,sig,so,data.nel,akel,1,tev,k1,indx,V1,data,prho,npar,par,p);
-                dd=log(data.roa(:))-log(ro(:));
+                %dd=log(data.roa(:))-log(ro(:));
+								ro = ro(data.indP);
+								J = J(data.indP,:);
+								dd=log(data.roa(:))-log(ro(:));
                 misfit=sqrt((Rd*dd)'*(Rd*dd)/data.nd)*100;
                 % Parameter update
 
@@ -193,8 +198,8 @@ function invert(pathname, filename)
             % Save inversion results for future display
             %dadi= fname; %handles.DataNames{val-nodir};
             %dadi(end-2:end)='mat';
-            ndot = findstr(fname,'.')
-            dadi = [fname(1:ndot) 'mat']
+            ndot = strfind(fname,'.');
+            dadi = [fname(1:ndot) 'mat'];
 
             if data.ip==0
                 save (dadi,'data','xp','zp','prho','misfit','iter','ro','alp1','-mat')
@@ -214,7 +219,7 @@ end
 %--------------------------------------------------------------------------
     function record = getResisitivityData(filename)
       if length(strfind(filename,'aprj'))
-        [record] = read_aprj(filename)
+        [record] = read_aprj(filename);
       else
         [record]=read_data(filename);
       end
