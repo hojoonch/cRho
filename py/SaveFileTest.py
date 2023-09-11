@@ -9,7 +9,7 @@ PATH = "/home/pi/cRho/DataDC" # FOR LINUX
 DATANUM = 12
 NTx = 1
 def SaveFileTest(FileNameBase):
-    for idx in range(1,NTx):
+    for idx in range(1,NTx+1):
         time.sleep(0.1)
         save_filename = os.path.join(PATH, FileNameBase +f"-{idx:03}"+ ".dat")
         output_file = open(save_filename, "wb")
