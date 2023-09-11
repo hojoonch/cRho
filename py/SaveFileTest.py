@@ -4,14 +4,14 @@ import datetime
 import json
 import os
 
-PATH = "/home/pi/cRho/DataDC" # FOR LINUX
+PATH = "/home/pi/cRho/" # FOR LINUX
 #PATH = ".\\DataDC\\" # FOR WINDOWS
 DATANUM = 12
 NTx = 1
 def SaveFileTest(FileNameBase):
     for idx in range(1,NTx+1):
         time.sleep(0.1)
-        save_filename = os.path.join(PATH, FileNameBase +f"-{idx:03}"+ ".dat")
+        save_filename = os.path.join(PATH, "DataDC", FileNameBase +f"-{idx:03}"+ ".dat")
         output_file = open(save_filename, "wb")
         with output_file as file:
             for j in [1,0,-1,0,-1,0,1,0]:    
@@ -31,12 +31,12 @@ def SaveJason(FileNameBase):
         return
     
     try:
-        with open("../JSON/DCworkControl.json", 'r') as f:
+        with open(os.path.join(PATH,"/JSON/DCworkControl.json"), 'r') as f:
             job = json.load(f)
     except FileNotFoundError as e:
             print("../JSON/DCworkControl.json not found")
 
-    with open(os.path.join(PATH, FileNameBase + ".json"), "w") as outfile:
+    with open(os.path.join(PATH, "DataDC",FileNameBase + ".json"), "w") as outfile:
         json.dump(job, outfile, indent=4)
 
 if __name__ == '__main__':
