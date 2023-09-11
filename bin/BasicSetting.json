@@ -14,11 +14,7 @@
   "CurrentSensingPolarity": 0,
   "v2cSlope": 3.25,
   "CurrentSensorCenterV": 6.0,
-<<<<<<< Updated upstream
   "DoMedianFiltering": true,
-=======
-  "DoMedianFiltering": false,
->>>>>>> Stashed changes
   "FilterLength": 11,
   "GainSetting": 1
 }
