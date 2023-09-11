@@ -6,7 +6,7 @@ import os
 
 PATH = "/home/pi/cRho/" # FOR LINUX
 #PATH = ".\\DataDC\\" # FOR WINDOWS
-DATANUM = 12
+DATANUM = 1320
 NTx = 1
 def SaveFileTest(FileNameBase):
     for idx in range(1,NTx+1):
