@@ -35,7 +35,7 @@ def SaveJason(FileNameBase):
         #rint(os.path.join(PATH,"JSON/DCworkControl.json"))
         with open(os.path.join(PATH,"JSON/DCworkControl.json"), 'r') as f:
             job = json.load(f)
-            job.FileNameBase = FileNameBase
+            job["FileNameBase"] = FileNameBase
             #print(job)
     except FileNotFoundError as e:
             print("../JSON/DCworkControl.json not found")
