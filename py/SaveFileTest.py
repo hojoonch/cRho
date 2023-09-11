@@ -4,8 +4,8 @@ import datetime
 import json
 import os
 
-# PATH = "/home/pi/cRho/DataDC" # FOR LINUX
-PATH = ".\\DataDC\\" # FOR WINDOWS
+PATH = "/home/pi/cRho/DataDC" # FOR LINUX
+#PATH = ".\\DataDC\\" # FOR WINDOWS
 DATANUM = 12
 
 def SaveFileTest(FileNameBase):
@@ -31,10 +31,10 @@ def SaveJason(FileNameBase):
         return
     
     try:
-        with open("./DCworkControl.json", 'r') as f:
+        with open("../JSON/DCworkControl.json", 'r') as f:
             job = json.load(f)
     except FileNotFoundError as e:
-            print("./DCworkControl.json not found")
+            print("../JSON/DCworkControl.json not found")
 
     with open(os.path.join(PATH, FileNameBase + ".json"), "w") as outfile:
         json.dump(job, outfile, indent=4)
