@@ -10,7 +10,7 @@ DATANUM = 660
 NTx = 20
 def SaveFileTest(FileNameBase):
     for idx in range(1,NTx+1):
-        time.sleep(0.1)
+        time.sleep(1)
         save_filename = os.path.join(PATH, "DataDC", FileNameBase +f"-{idx:03}"+ ".dat")
         output_file = open(save_filename, "wb")
         with output_file as file:
