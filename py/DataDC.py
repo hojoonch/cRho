@@ -34,15 +34,15 @@ def SaveFileTest(FileNameBase):
                     output_file.write(data)    
                     time.sleep(0.001)
         print(save_filename+" SAVED")
-        try:
-            # Send the message to the target
-            udp_socket.sendto(message, (target_host, target_port))
-            print(f"Message sent to {target_host}:{target_port}: {message.decode('utf-8')}")
-        except Exception as e:
-            print(f"Error sending message: {str(e)}")
-        finally:
-            # Close the socket
-            udp_socket.close()
+    try:
+        # Send the message to the target
+        udp_socket.sendto(message, (target_host, target_port))
+        print(f"Message sent to {target_host}:{target_port}: {message.decode('utf-8')}")
+    except Exception as e:
+        print(f"Error sending message: {str(e)}")
+    finally:
+        # Close the socket
+        udp_socket.close()
             
             
 def SaveJason(FileNameBase):
