@@ -4,15 +4,19 @@ import datetime
 import json
 import os
 
-PATH = "/home/pi/cRho/" # FOR LINUX
-#PATH = ".\\DataDC\\" # FOR WINDOWS
+targetDir = 'TestData'
+PATH = os.getcwd()
+indx = PATH.find('cRho')
+PATH = PATH[:indx+4]
+
 DATANUM = 660
 NTx = 20
 def SaveFileTest(FileNameBase):
     for idx in range(1,NTx+1):
         time.sleep(1)
-        save_filename = os.path.join(PATH, "DataDC", FileNameBase +f"-{idx:03}"+ ".dat")
+        save_filename = os.path.join(PATH, targetDir, FileNameBase +f"-{idx:03}"+ ".dat")
         output_file = open(save_filename, "wb")
+        print(save_filename+" Opend")
         with output_file as file:
             for j in [1,0,-1,0,-1,0,1,0]:    
                 for i in range(DATANUM):
@@ -33,14 +37,14 @@ def SaveJason(FileNameBase):
     try:
         #print(PATH)
         #rint(os.path.join(PATH,"JSON/DCworkControl.json"))
-        with open(os.path.join(PATH,"JSON/DCworkControl.json"), 'r') as f:
+        with open(os.path.join(PATH,"JSON","DCworkControl.json"), 'r') as f:
             job = json.load(f)
             job["FileNameBase"] = FileNameBase
             #print(job)
     except FileNotFoundError as e:
             print("../JSON/DCworkControl.json not found")
 
-    with open(os.path.join(PATH, "DataDC",FileNameBase + ".json"), "w") as outfile:
+    with open(os.path.join(PATH, targetDir,FileNameBase + ".json"), "w") as outfile:
         json.dump(job, outfile, indent=4)
 
 if __name__ == '__main__':
