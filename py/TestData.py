@@ -40,6 +40,7 @@ def SaveJason(FileNameBase):
         with open(os.path.join(PATH,"JSON","DCworkControl.json"), 'r') as f:
             job = json.load(f)
             job["FileNameBase"] = FileNameBase
+            job["DoElectrodeTest"] = True
             #print(job)
     except FileNotFoundError as e:
             print("../JSON/DCworkControl.json not found")
