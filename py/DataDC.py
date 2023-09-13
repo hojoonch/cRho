@@ -3,6 +3,15 @@ import time
 import datetime
 import json
 import os
+import socket
+
+target_host='127.0.0.1'
+target_port=3800
+# Create a UDP socket
+udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+# Message to send (convert to bytes)
+message = b"DCDONE"
 
 targetDir = 'DataDC'
 PATH = os.getcwd()
@@ -25,7 +34,17 @@ def SaveFileTest(FileNameBase):
                     output_file.write(data)    
                     time.sleep(0.001)
         print(save_filename+" SAVED")
-
+        try:
+            # Send the message to the target
+            udp_socket.sendto(message, (target_host, target_port))
+            print(f"Message sent to {target_host}:{target_port}: {message.decode('utf-8')}")
+        except Exception as e:
+            print(f"Error sending message: {str(e)}")
+        finally:
+            # Close the socket
+            udp_socket.close()
+            
+            
 def SaveJason(FileNameBase):
     try:
         if not os.path.exists(PATH):
