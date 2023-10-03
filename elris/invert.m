@@ -17,7 +17,7 @@ function invert(pathname, filename)
           pathname = pwd
         endif
         if isempty(filename)
-          filename = 'a5_1_ws_6.dat';
+          filename = 'DC2022-12-08-11-34.aprj';
         endif
         fname = [pathname filesep filename];
         data = getResisitivityData(fname);
