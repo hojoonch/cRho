@@ -23,11 +23,12 @@ function invert(varargin)
         if cname(1:3) == 'x86'
           % windows
           %cname
-          rapidjson_dir = strcat(pwd, "\rapidjson_win");
+          rapidjson_dir = strcat(pwd, '\rapidjson_win');
         elseif cname(1:3) == 'arm'
           %Linux
-          rapidjson_dir = strcat(pwd , "/rapidjson_rpi")
+          rapidjson_dir = strcat(pwd , '/rapidjson_rpi');
         end
+        rapidjson_dir
         addpath(rapidjson_dir);
 
 				itmax = 5;
