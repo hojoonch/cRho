@@ -17,6 +17,20 @@ function invert(varargin)
         fname = [pathname filesep filename];
         data = getResisitivityData(fname);
 
+
+        cname = computer();
+        if cname(1:3) == 'x86'
+          % windows
+          %cname
+          rapidjson_dir = pwd & "\rapidjson_win";
+        elseif cname(1:3) == 'arm'
+          %  Linux
+          %cname
+          %system([' ./triangle -Q -q ',pfix,'.poly'])
+          rapidjson_dir = pwd & "\rapidjson_rpi";
+        end
+        addpath(rapidjson_dir);
+
 				itmax = 5;
 
         if itmax==11
