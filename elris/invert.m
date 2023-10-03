@@ -71,7 +71,7 @@ function invert()%(varargin)
                         end
                     end
                 case 1 % Normal mode selected
-                    [p,t,nlay,tev,par,npar,z]=meshgen(data,exepath);
+                    [p,t,nlay,tev,par,npar,z]=meshgen(data,exepath,datapath );
 
                     parc=1:npar;
                     say=1;

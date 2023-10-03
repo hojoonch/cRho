@@ -1,4 +1,4 @@
-function [p,t,nlay,tev,par,npar,zi]=meshgen(data,pathname)
+function [p,t,nlay,tev,par,npar,zi]=meshgen(data,pathname,datapath)
 
 % Mesh generator. 'normal' mode is selected. Model space is constructed by
 % dividing rectangular blocks into two triangles. Outer part of the mesh is
@@ -75,9 +75,18 @@ element_node = element_data_read ( [pfix,'.1.ele'], element_order, ...
 t_dis=element_node;
 p_dis=node_xy;
 
-delete('*.poly');
-delete('*.ele');
-delete('*.node');
+if cname(1:3) == 'x86'
+  % windows
+  delete(strcat(datapath, '\*.poly'));
+  delete(strcat(datapath,'\*.ele'));
+  delete(strcat(datapath,'\*.node'));
+
+elseif cname(1:3) == 'arm'
+  % Linux
+  delete(strcat(datapath, '/*.poly'));
+  delete(strcat(datapath,'/*.ele'));
+  delete(strcat(datapath,'/*.node'));
+end
 
 nz=length(zi);
 p_ic=[x(:)';y(:)'];
