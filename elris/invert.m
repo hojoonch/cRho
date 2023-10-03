@@ -193,7 +193,7 @@ function invert(varargin)
             %dadi= fname; %handles.DataNames{val-nodir};
             %dadi(end-2:end)='mat';
             ndot = strfind(fname,'.');
-            dadi = [pathname filesep fname(1:ndot) 'mat'];
+            dadi = [fname(1:ndot) 'mat'];
 
             if data.ip==0
                 save (dadi,'data','xp','zp','prho','misfit','iter','ro','alp1','-mat')
