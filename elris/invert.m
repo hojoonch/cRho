@@ -7,8 +7,8 @@ function invert(varargin)
           pathname = pwd;
           filename = strtrim(varargin{1});
         elseif length(varargin) == 2
-          pathname = strtrim(varargin{1});
-          filename = strtrim(varargin{2}) ;
+          pathname = strtrim(varargin{1})
+          filename = strtrim(varargin{2})
         else
           pathname = pwd;
           filename = 'DC2022-12-08-11-34.aprj';
