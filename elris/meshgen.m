@@ -1,4 +1,4 @@
-function [p,t,nlay,tev,par,npar,zi]=meshgen(data)
+function [p,t,nlay,tev,par,npar,zi]=meshgen(data,pathname)
 
 % Mesh generator. 'normal' mode is selected. Model space is constructed by
 % dividing rectangular blocks into two triangles. Outer part of the mesh is
@@ -56,11 +56,11 @@ cname = computer();
 if cname(1:3) == 'x86'
   % windows
   %cname
-  system([' .\triangle.exe -Q -q ',pfix,'.poly'])
+  system([pathname,'\triangle.exe -Q -q ',pfix,'.poly'])
 elseif cname(1:3) == 'arm'
   % Linux
   %cname
-  system([' ./triangle -Q -q ',pfix,'.poly'])
+  system([pathname,'/triangle -Q -q ',pfix,'.poly'])
 end
 
 
