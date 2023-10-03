@@ -14,9 +14,6 @@ function invert(varargin)
           filename = 'DC2022-12-08-11-34.aprj';
         endif
 
-        fname = [pathname filesep filename];
-        data = getResisitivityData(fname);
-
 
         cname = computer();
         rapidjson_dir = "";
@@ -28,8 +25,11 @@ function invert(varargin)
           %Linux
           rapidjson_dir = strcat(pwd , '/rapidjson_rpi');
         end
-        rapidjson_dir
+        %rapidjson_dir
         addpath(rapidjson_dir);
+
+        fname = [pathname filesep filename];
+        data = getResisitivityData(fname);
 
 				itmax = 5;
 
