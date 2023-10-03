@@ -1,48 +1,34 @@
 function invert()%(varargin)
         %
         % rpi command line run
-        % >> octave-cli invert.m arg1 arg2
         %
-        %if length(varargin) == 1
-        %  pathname = pwd;
-        %  filename = strtrim(varargin{1});
-        %elseif length(varargin) == 2
-        %  pathname = strtrim(varargin{1});
-        %  filename = strtrim(varargin{2});
-        %else
-        %  pathname = pwd;
-        %  filename = 'DC2022-12-08-11-34.aprj';
-        %endif
+        %
 
         args=argv();
-        if length(args) == 1
-          pathname = pwd;
-          filename = strtrim(args{1});
-        elseif length(args) == 2
-          pathname = strtrim(args{1});
-          filename = strtrim(args{2});
+        if length(args) ==3
+           exepath = strtrim(args{1})
+          datapath = strtrim(args{2});
+          filename = strtrim(args{3});
         else
-          pathname = pwd;
-          filename = 'DC2022-12-08-11-34.aprj';
+          exepath = pwd;
+          datapath = pwd;
+          filename = 'DC2023-09-21-15-03.aprj';
         endif
-
-        pathname
-        filename
 
         cname = computer();
         rapidjson_dir = "";
         if cname(1:3) == 'x86'
           % windows
           %cname
-          rapidjson_dir = strcat(pathname, '\rapidjson_win');
+          rapidjson_dir = strcat(exepath, '\rapidjson_win');
         elseif cname(1:3) == 'arm'
           %Linux
-          rapidjson_dir = strcat(pathname , '/rapidjson_rpi');
+          rapidjson_dir = strcat(exepath , '/rapidjson_rpi');
         end
         %rapidjson_dir
         addpath(rapidjson_dir);
 
-        fname = [pathname filesep filename];
+        fname = [datapath filesep filename];
         data = getResisitivityData(fname);
 
 				itmax = 5;
@@ -85,7 +71,7 @@ function invert()%(varargin)
                         end
                     end
                 case 1 % Normal mode selected
-                    [p,t,nlay,tev,par,npar,z]=meshgen(data,pathname);
+                    [p,t,nlay,tev,par,npar,z]=meshgen(data,exepath);
 
                     parc=1:npar;
                     say=1;

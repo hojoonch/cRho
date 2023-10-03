@@ -408,8 +408,8 @@ function ndata = cal_ndata(type, N, Nd1)
   return
 
 function veri = makeR2dinvData(dataJ)
-  R01 = dataJ.R01;
-  R11 = dataJ.R11;
+  Rhoa01 = dataJ.Rhoa01;
+  Rhoa11 = dataJ.Rhoa11;
   veri=[];
   if dataJ.arrayType == 5000  % schlumberger
     nf = 2;
@@ -447,7 +447,7 @@ function veri = makeR2dinvData(dataJ)
       veri(ind,1) = mp;
       veri(ind,2) = mn;
       veri(ind,3) = nn;
-      veri(ind,4) = R01(i,j);
+      veri(ind,4) = Rhoa01(i,j);
       ind=ind+1;
     endfor
     #printf('\n')

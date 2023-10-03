@@ -33,7 +33,8 @@ xcerceve=[x1 x2 data.xelek(2:end-1)' x3 x4 x4 x1];
 
 %preparing input file for Triangle
 
-pfix=data.filename(1:end-4);
+%pfix=data.filename(1:end-4);
+pfix=data.filename(1:strfind(data.filename,'.')-1);
 fidp=fopen([pfix,'.poly'],'w');
 np=length(xcerceve);
 fprintf(fidp,'%d 2 1 0\n',np);
