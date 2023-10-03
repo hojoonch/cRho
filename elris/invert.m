@@ -14,6 +14,9 @@ function invert(varargin)
           filename = 'DC2022-12-08-11-34.aprj';
         endif
 
+        pathname
+        filename
+
 
         cname = computer();
         rapidjson_dir = "";
