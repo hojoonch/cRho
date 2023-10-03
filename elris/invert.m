@@ -27,7 +27,7 @@ function invert(varargin)
           %  Linux
           %cname
           %system([' ./triangle -Q -q ',pfix,'.poly'])
-          rapidjson_dir = pwd & "\rapidjson_rpi";
+          rapidjson_dir = pwd & "/rapidjson_rpi";
         end
         addpath(rapidjson_dir);
 
