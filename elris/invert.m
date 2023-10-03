@@ -5,7 +5,7 @@ function invert(varargin)
         %
         if length(varargin) == 1
           pathname = pwd;
-          filename = strtrim(varargin{1})
+          filename = strtrim(varargin{1});
         elseif length(varargin) == 2
           pathname = strtrim(varargin{1});
           filename = strtrim(varargin{2}) ;
@@ -19,15 +19,14 @@ function invert(varargin)
 
 
         cname = computer();
+        rapidjson_dir = "";
         if cname(1:3) == 'x86'
           % windows
           %cname
-          rapidjson_dir = pwd & "\rapidjson_win";
+          rapidjson_dir = strcat(pwd, "\rapidjson_win");
         elseif cname(1:3) == 'arm'
-          %  Linux
-          %cname
-          %system([' ./triangle -Q -q ',pfix,'.poly'])
-          rapidjson_dir = pwd & "/rapidjson_rpi";
+          %Linux
+          rapidjson_dir = strcat(pwd , "/rapidjson_rpi");
         end
         addpath(rapidjson_dir);
 
