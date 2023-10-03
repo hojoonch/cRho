@@ -1,50 +1,27 @@
-function invert(pathname, filename)
-        %val = get(handles.FileListBox, 'value');
-        %nodir=handles.DataID(1)-1;
-        %data=handles.DataContents{val-nodir};
-
-        #if length(varargin) > 1
-        #  fname = varargin{1}
-        #else
-
-
-        # this is original function to read Res2Dinv format
-        #global pathname
-
-        pathname = strtrim(pathname)
-        filename = strtrim(filename)
-        if isempty(pathname)
-          pathname = pwd
-        endif
-        if isempty(filename)
+function invert(varargin)
+        %
+        % rpi command line run
+        % >> octave-cli invert.m arg1 arg2
+        %
+        if length(varargin) == 1
+          pathname = pwd;
+          filename = strtrim(varargin{1})
+        elseif length(varargin) == 2
+          pathname = strtrim(varargin{1});
+          filename = strtrim(varargin{2}) ;
+        else
+          pathname = pwd;
           filename = 'DC2022-12-08-11-34.aprj';
         endif
+
         fname = [pathname filesep filename];
         data = getResisitivityData(fname);
 
-				%data
-				%pause
-
-        %set(handles.InvBut,'Enable','off')
-        %cocuk=get(handles.resip,'Children');
-        %secili=get(handles.resip,'SelectedObject');
-        %kont=get(secili,'String');
-        %if strcmp(kont,'IP')
-        %    kont2=find(cocuk~=secili);
-        %    set(handles.resip,'SelectedObject',cocuk(2))
-        %end
-
-        % Getting inversion settings
-        %itmax = (get(handles.numiter,'Value'));
-        itmax = 5;
+				itmax = 5;
 
         if itmax==11
             itmax=15;
         end
-%         for k=1:4
-%             opt(k) = get(handles.(['gosterim',num2str(k)]),'Value');
-%         end
-%         mtype=get(handles.mesh,'value');
 
         mtype = 1
         switch mtype
