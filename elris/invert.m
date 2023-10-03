@@ -20,10 +20,10 @@ function invert(varargin)
         if cname(1:3) == 'x86'
           % windows
           %cname
-          rapidjson_dir = strcat(pwd, '\rapidjson_win');
+          rapidjson_dir = strcat(pathname, '\rapidjson_win');
         elseif cname(1:3) == 'arm'
           %Linux
-          rapidjson_dir = strcat(pwd , '/rapidjson_rpi');
+          rapidjson_dir = strcat(pathname , '/rapidjson_rpi');
         end
         %rapidjson_dir
         addpath(rapidjson_dir);
@@ -190,7 +190,7 @@ function invert(varargin)
             %dadi= fname; %handles.DataNames{val-nodir};
             %dadi(end-2:end)='mat';
             ndot = strfind(fname,'.');
-            dadi = [fname(1:ndot) 'mat'];
+            dadi = [pathname filesep fname(1:ndot) 'mat'];
 
             if data.ip==0
                 save (dadi,'data','xp','zp','prho','misfit','iter','ro','alp1','-mat')
