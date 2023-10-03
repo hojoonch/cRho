@@ -1,22 +1,33 @@
-function invert(varargin)
+function invert()%(varargin)
         %
         % rpi command line run
         % >> octave-cli invert.m arg1 arg2
         %
-        if length(varargin) == 1
+        %if length(varargin) == 1
+        %  pathname = pwd;
+        %  filename = strtrim(varargin{1});
+        %elseif length(varargin) == 2
+        %  pathname = strtrim(varargin{1});
+        %  filename = strtrim(varargin{2});
+        %else
+        %  pathname = pwd;
+        %  filename = 'DC2022-12-08-11-34.aprj';
+        %endif
+
+        args=argv();
+        if length(args) == 1
           pathname = pwd;
-          filename = strtrim(varargin{1});
-        elseif length(varargin) == 2
-          pathname = strtrim(varargin{1});
-          filename = strtrim(varargin{2});
+          filename = strtrim(args{1});
+        elseif length(args) == 2
+          pathname = strtrim(args{1});
+          filename = strtrim(args{2});
         else
           pathname = pwd;
           filename = 'DC2022-12-08-11-34.aprj';
         endif
-        length(varargin)
+
         pathname
         filename
-
 
         cname = computer();
         rapidjson_dir = "";
