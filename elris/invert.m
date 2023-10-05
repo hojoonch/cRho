@@ -152,7 +152,7 @@ function invert()%(varargin)
 						dadj = [fname(1:ndot) 'invj'];
 
             if data.ip==0
-                save (dadi,'data','xp','zp','prho','misfit','iter','ro','alp1','-mat')
+                %save (dadi,'data','xp','zp','prho','misfit','iter','ro','alp1','-mat')
 								%roaori = data.roaori;
 								%indP = data.indP;
 								%save (dadi,'roaori','indP','xp','zp','prho','mfit','ro','-mat')
