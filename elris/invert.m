@@ -138,8 +138,8 @@ function invert()%(varargin)
                     end
                 end
                 if iter>=2
-                    lambda=lambda*.55; % original value
-										%lambda=lambda*.7;
+                    %lambda=lambda*.55; % original value
+										lambda=lambda*.7;
                 end
             end
 

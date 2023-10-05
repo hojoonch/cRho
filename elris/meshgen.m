@@ -4,10 +4,17 @@ function [p,t,nlay,tev,par,npar,zi]=meshgen(data,pathname,datapath)
 % dividing rectangular blocks into two triangles. Outer part of the mesh is
 % unstructured. Unstructured mesh is produced by Triangle program
 
-useOriginal = true;
+useOriginal = false;
+
 
 if useOriginal
-	dz(1)=data.dz1/1.5;
+	% adjust data.zmax
+	data.zmax = data.ela * 5;
+	data.dz1 = 2.5;
+	dz(1)=data.dz1
+	%-----------------
+
+	%dz(1)=data.dz1/1.5; % original
 	for i=2:1000
     if sum(dz)<=data.zmax*1.1
         zk=dz(i-1)*1.1;
