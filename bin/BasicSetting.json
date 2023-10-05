@@ -16,5 +16,6 @@
   "CurrentSensorCenterV": 6.0,
   "DoMedianFiltering": true,
   "FilterLength": 11,
-  "GainSetting": 1
+  "GainSetting": 1,
+  "runDCInversionAfterMeasureDone": true
 }

@@ -3,21 +3,32 @@ function [p,t,nlay,tev,par,npar,zi]=meshgen(data,pathname,datapath)
 % Mesh generator. 'normal' mode is selected. Model space is constructed by
 % dividing rectangular blocks into two triangles. Outer part of the mesh is
 % unstructured. Unstructured mesh is produced by Triangle program
-dz(1)=data.dz1/1.5;
 
-for i=2:1000
+useOriginal = true;
+
+if useOriginal
+	dz(1)=data.dz1/1.5;
+	for i=2:1000
     if sum(dz)<=data.zmax*1.1
         zk=dz(i-1)*1.1;
         dz(i)=zk;
         nlay=i;
     end
+	end
+	z=cumsum(dz);
+	oran=max(z)/data.zmax;
+	z=z/oran;
+	zi=-[0 z];
+else
+	data.dz1 = 0.5*data.ela;
+	dz = [0.5 0.5 1 1.5 2.5]*data.ela;
+	nlay = 5;
+	z=cumsum(dz);
+	data.zmax=max(z);
+	oran=max(z)/data.zmax;
+	z=z/oran;
+	zi=-[0 z];
 end
-
-z=cumsum(dz);
-oran=max(z)/data.zmax;
-z=z/oran;
-zi=-[0 z];
-
 
 ek=10;
 

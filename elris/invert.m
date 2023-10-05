@@ -31,11 +31,11 @@ function invert()%(varargin)
         fname = [datapath filesep filename];
         data = getResisitivityData(fname);
 
-				itmax = 5;
+				itmax = 20;
 
-        if itmax==11
-            itmax=15;
-        end
+        %if itmax==11
+        %    itmax=15;
+        %end
 
         mtype = 1
         switch mtype
@@ -93,13 +93,8 @@ function invert()%(varargin)
             sd=1./data.roa.^.025;
             %
             Rd=diag(sd);
-%             clear_main_panel(handles)
 
-%             g3 = get(handles.gosterim1,'Value');
-%             set(handles.progressbar, 'position', [.8 0 0.01 1]);
-%             set(handles.progressbar ,'Visible','on')
-            %
-            tic
+            %tic
 
             for iter=1:itmax
                 % Forward operator
@@ -110,12 +105,11 @@ function invert()%(varargin)
 								dd=log(data.roa(:))-log(ro(:));
                 misfit=sqrt((Rd*dd)'*(Rd*dd)/data.nd)*100;
                 % Parameter update
-
                 [misfit,sig,prho,ro]=pupd(data,J,par,yky,t,es,akel,tev,k1,indx,V1,prho',npar,dd,so,p,C,lambda,Rd);
-%                 figure
-%                 pdeplot(p,[],t,'xydata',1./sig,'xystyle','flat')
-
                 mfit(iter)=misfit;
+
+								misfit
+
                 g3 =1;
                 switch g3
                     case 0
@@ -123,7 +117,6 @@ function invert()%(varargin)
                     case 1
                         cizro=log10(prho');
                 end
-                % Graph the results of iterations
 
                 if iter==1
                     alp=sum(abs(J),1);
@@ -132,35 +125,12 @@ function invert()%(varargin)
                     alp1=(alp1(:));
                     alp1=alp1+(.91-min(alp1));
                     alp1(alp1>1)=1;
-                    %mod_graph(xp,zp,cizro,alp1,data.xelek,iter,misfit,data.nel,handles.ModRes)
-                    %pseudo(data.xd,data.psd,ro,handles.CalcResPsd,2,opt,data.xelek,data.zelek,[],2);
-                    %pseudo(data.xd,data.psd,data.roa,handles.MeasResPsd,1,opt,data.xelek,data.zelek,[],2);
-                    %imagemenu_tr_contour(handles);
-                    %set(handles.MeasResPsd,'XLim',[data.xelek(1) data.xelek(end)])
-                    %set(handles.CalcResPsd,'XLim',[data.xelek(1) data.xelek(end)])
-                    %resizeFcn;
-                    %c=caxis(handles.MeasResPsd);
-                    %caxis(handles.CalcResPsd,c)
-                    %drawnow;
                 else
-                    %hh=handles.model;
-                    %set(hh,'CData',repmat(cizro,4,1))
-                    %title(handles.ModRes,['Model Resistivity Section',' Iteration : ', num2str(iter),' RMS % = ',sprintf('%5.2f',misfit)]);
-                    %axpos=get(handles.ModRes,'position');
-                    %pseudo(data.xd,data.psd,ro,handles.CalcResPsd,2,opt,data.xelek,data.zelek,[],2);
-                    %set(handles.CalcResPsd,'XLim',[data.xelek(1) data.xelek(end)])
-                    %c=caxis(handles.MeasResPsd);
-                    %caxis(handles.CalcResPsd,c)
-                    %drawnow;
+
                 end
+
                 oran=.2*(1/itmax)*iter;
-%                 set(handles.progressbar, 'position', [.8 0 oran 1]);%,'BackGroundColor',[255-oran*255 255 255-oran*255]/255);
-%
-%                 set(handles.statusText, 'string', ...
-%                     sprintf('Iteration ... %d / %d',iter,itmax))
-%                 drawnow;
-                %Stop the inversion if the improvement in the misfit is
-                %less than %2.5
+
                 if iter>1
                     farkm=abs(mfit(iter)-mfit(iter-1))./mfit(iter);
                     if farkm<.025
@@ -168,37 +138,33 @@ function invert()%(varargin)
                     end
                 end
                 if iter>=2
-                    lambda=lambda*.55;
+                    lambda=lambda*.55; % original value
+										%lambda=lambda*.7;
                 end
             end
+
             if data.ip
                 [pma,misfit_ip,mac,iterx]=pure_ip(data,ro,sig,J,prho,C,es,akel,V1,k1,so,indx,pma,nu,tev,par,p,t,npar,Rd);
             end
 
-
-%             itime=toc;
-%             yer=get(handles.statusText,'position');
-%             set(handles.statusText, 'string', ...
-%                 [num2str(iter), ' iterations completed in ',sprintf('%5.2f',itime),' seconds.'],'position', [.78, .0, .2 .81]);
-%             %Enable context menus
-%             imagemenu_tr_patch(handles);
-%             imagemenu_tr_contour(handles);
-%             set(handles.progressbar ,'Visible','off')
-%             pause(1)
-%             set(handles.statusText, 'string', '','position',yer)
-            % Save inversion results for future display
-            %dadi= fname; %handles.DataNames{val-nodir};
-            %dadi(end-2:end)='mat';
             ndot = strfind(fname,'.');
             dadi = [fname(1:ndot) 'mat'];
+						dadj = [fname(1:ndot) 'invj'];
 
             if data.ip==0
                 save (dadi,'data','xp','zp','prho','misfit','iter','ro','alp1','-mat')
-%                set(handles.InvBut,'Enable','on')
+								%roaori = data.roaori;
+								%indP = data.indP;
+								%save (dadi,'roaori','indP','xp','zp','prho','mfit','ro','-mat')
+								outD = [data.xd data.mn data.nlev data.roa ro(data.indP)];
+								model = [(xp(:,1)+xp(:,3))/2 xp(:,3)-xp(:,1) -(zp(:,1)+zp(:,3))/2 -(zp(:,3)-zp(:,1)) prho];
+								%save (dadi,'model','outD','mfit','-mat')
+								jstr = save_json(struct("InvModel", model,"InOutData",outD,"misfit",mfit));
+								fid = fopen(dadj,'w+');
+								fprintf(fid,jstr);
+								fclose(fid);
             else
                 save (dadi,'data','xp','zp','prho','misfit','iter','ro','alp1','pma','mac','misfit_ip','-mat')
-%                set(handles.InvBut,'Enable','on')
-
             end
 
         end

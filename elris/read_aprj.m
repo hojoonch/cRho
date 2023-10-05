@@ -231,6 +231,7 @@ data.nd = length(indP);
 data.xd = data.xd(indP);
 data.mn = data.mn(indP);
 data.nlev = data.nlev(indP);
+data.roaori=data.roa;
 data.roa = data.roa(indP);
 
 data.homro=exp(mean(log(data.roa)));%exp(sum(log(data.roa)/length(data.roa)));%%
@@ -242,7 +243,7 @@ end
 data.filename=filename;
 
 
-%1: Wenner, 2:Pole-pole 3: Dipole-dipole 6: Pole-dipole 7: Wenner-Schlumberger 11: Mixed
+% 1: Wenner, 2:Pole-pole 3: Dipole-dipole 6: Pole-dipole 7: Wenner-Schlumberger 11: Mixed
 function data=okuJ(data, dataJ, fid)
   veri = makeR2dinvData(dataJ);
 
@@ -311,6 +312,7 @@ elseif data.eldiz==11
         end
         roa(k)=fscanf(fid,'%f',1);
     end
+
     switch data.subeldiz
         case 3
             data.eldizc='Dipol-Dipol';
@@ -368,8 +370,6 @@ elseif data.eldiz==11
             data.dz1=0.5*data.ela;
             data.roa=roa;
             data.xd=(xc1+xc2)/2;
-
-
     end
 end
 sd=1./(data.roa).^.25;
