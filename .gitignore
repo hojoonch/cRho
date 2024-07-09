@@ -10,8 +10,15 @@ DataSP/*
 JSON/
 JSON/*
 JSON/*.json
+DataTestADC/
+DataTestADC/*
+DataTestADC/*.*
+DataTestEl/
+DataTestEl/*
+DataTestEl/*.*
 Log.txt
 bin/BasicSetting.json
 *.o
 *.mat
 octave-rapidjson/rapidjson/
+
