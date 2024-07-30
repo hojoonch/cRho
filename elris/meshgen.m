@@ -77,10 +77,10 @@ if findstr(cname, "w64" )
   system([pathname,'\triangle.exe -Q -q ',pfix,'.poly'])
 elseif findstr(cname, "arm" )
   % Raspberry Pi
-  system([pathname,'/triangle.rpi -Q -q ',pfix,'.poly'])
+  system([pathname,'/triangle_rpi -Q -q ',pfix,'.poly'])
 elseif findstr(cname, "pc-linux" )
   % Ubuntu
-  system([pathname,'/triangle.ubuntu -Q -q ',pfix,'.poly'])
+  system([pathname,'/triangle_ubuntu -Q -q ',pfix,'.poly'])
 end
 
 
