@@ -20,5 +20,4 @@ Log.txt
 bin/BasicSetting.json
 *.o
 *.mat
-octave-rapidjson/rapidjson/
 
