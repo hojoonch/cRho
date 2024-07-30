@@ -17,13 +17,15 @@ function invert()%(varargin)
 
         cname = computer();
         rapidjson_dir = "";
-        if cname(1:3) == 'x86'
+
+        if findstr(cname, 'w64')
           % windows
-          %cname
           rapidjson_dir = strcat(exepath, '\rapidjson_win');
-        elseif cname(1:3) == 'arm'
-          %Linux
+        elseif findstr(cname, 'arm')
+          % raspberry pi
           rapidjson_dir = strcat(exepath , '/rapidjson_rpi');
+				elseif findstr(cname, 'pc-linux')
+					rapidjson_dir = strcat(exepath , '/rapidjson_ubuntu');
         end
         %rapidjson_dir
         addpath(rapidjson_dir);

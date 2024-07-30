@@ -72,14 +72,15 @@ fclose(fidp);
 %system(['! /opt/local/bin/triangle -Q -q ',pfix,'.poly']) %gnu octave
 %system(['! /home/pi/cRho/triangle/triangle -Q -q ',pfix,'.poly']) %gnu octave
 cname = computer();
-if cname(1:3) == 'x86'
+if findstr(cname, "w64" )
   % windows
-  %cname
   system([pathname,'\triangle.exe -Q -q ',pfix,'.poly'])
-elseif cname(1:3) == 'arm'
-  % Linux
-  %cname
-  system([pathname,'/triangle -Q -q ',pfix,'.poly'])
+elseif findstr(cname, "arm" )
+  % Raspberry Pi
+  system([pathname,'/triangle.rpi -Q -q ',pfix,'.poly'])
+elseif findstr(cname, "pc-linux" )
+  % Ubuntu
+  system([pathname,'/triangle.ubuntu -Q -q ',pfix,'.poly'])
 end
 
 
