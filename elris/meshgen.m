@@ -81,6 +81,9 @@ elseif findstr(cname, "arm" )
 elseif findstr(cname, "pc-linux" )
   % Ubuntu
   system([pathname,'/triangle_ubuntu -Q -q ',pfix,'.poly'])
+elseif findstr(cname, "apple" )
+  % MacOs
+  system([pathname,'/triangle_macos -Q -q ',pfix,'.poly'])
 end
 
 

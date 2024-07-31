@@ -25,7 +25,11 @@ function invert()%(varargin)
           % raspberry pi
           rapidjson_dir = strcat(exepath , '/rapidjson_rpi');
 				elseif findstr(cname, 'pc-linux')
+					% ubuntu
 					rapidjson_dir = strcat(exepath , '/rapidjson_ubuntu');
+				elseif findstr(cname, 'apple')
+					% MacOS
+					rapidjson_dir = strcat(exepath , '/rapidjson_macos');
         end
         %rapidjson_dir
         addpath(rapidjson_dir);
